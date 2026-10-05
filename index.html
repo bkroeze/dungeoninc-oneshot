@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dungeon, Inc. — A Goblin Entrepreneurship One-Shot</title>
+  <meta name="description" content="Dungeon, Inc. — ever wondered who builds the dungeons? Come pitch in and find out. A one-shot TTRPG run by DM Bruce K.">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #0d0b0a;
+      --dungeon: #14100d;
+      --dungeon-deep: #0a0806;
+      --gold: #c9a227;
+      --gold-soft: #d8b94a;
+      --gold-faint: rgba(201, 162, 39, 0.35);
+      --red: #a32a2a;
+      --red-deep: #6f1d1d;
+      --red-ember: #c6452f;
+      --parchment: #e9dcc0;
+      --parchment-dim: #d9c9a6;
+      --bone: #f4ecd8;
+      --muted: #b7a888;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "IM Fell English", "Georgia", serif;
+      background-color: var(--dungeon);
+      background-image:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(201, 162, 39, 0.08), transparent 60%),
+        radial-gradient(ellipse 60% 50% at 50% 115%, rgba(163, 42, 42, 0.10), transparent 60%);
+      color: var(--parchment);
+      line-height: 1.55;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Faint stone/grain texture overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.018) 0px, rgba(0,0,0,0.018) 1px, transparent 1px, transparent 3px);
+      mix-blend-mode: multiply;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 2;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ---------- Ornamental rules ---------- */
+    .rule {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--gold);
+      margin: 0 auto;
+    }
+    .rule::before, .rule::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-faint), var(--gold), var(--gold-faint), transparent);
+    }
+    .rule .glyph { font-size: 1.1rem; letter-spacing: 0.2em; }
+
+    /* ---------- Header ---------- */
+    header.topbar {
+      padding: 28px 0 10px;
+      text-align: center;
+    }
+    .topbar .eyebrow {
+      font-family: "IM Fell English SC", serif;
+      letter-spacing: 0.34em;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 40px;
+      align-items: center;
+      padding: 48px 0 56px;
+    }
+    .hero .title-block h1 {
+      font-family: "Cinzel", serif;
+      font-weight: 900;
+      font-size: clamp(2.6rem, 6vw, 4.4rem);
+      line-height: 1.0;
+      letter-spacing: 0.03em;
+      color: var(--bone);
+      text-shadow: 0 2px 0 rgba(0,0,0,0.55), 0 0 28px rgba(201, 162, 39, 0.18);
+    }
+    .hero .title-block h1 .amp {
+      color: var(--gold);
+    }
+    .hero .subtitle {
+      margin-top: 22px;
+      font-style: italic;
+      font-size: 1.35rem;
+      color: var(--parchment-dim);
+      max-width: 34ch;
+    }
+    .hero .subtitle strong { color: var(--gold-soft); font-style: normal; }
+    .hero .tagline-accent {
+      margin-top: 18px;
+      display: inline-block;
+      font-family: "IM Fell English SC", serif;
+      letter-spacing: 0.22em;
+      font-size: 0.78rem;
+      color: var(--red-ember);
+      text-transform: uppercase;
+      border-top: 1px solid var(--gold-faint);
+      border-bottom: 1px solid var(--gold-faint);
+      padding: 8px 4px;
+    }
+
+    .hero .art-frame {
+      position: relative;
+      padding: 12px;
+      border: 1px solid var(--gold-faint);
+      outline: 1px solid rgba(0,0,0,0.6);
+      outline-offset: -6px;
+      background: linear-gradient(160deg, #1b140e, #0f0c09);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(201,162,39,0.06);
+    }
+    .hero .art-frame::before,
+    .hero .art-frame::after {
+      content: "";
+      position: absolute;
+      width: 18px; height: 18px;
+      border: 1px solid var(--gold);
+      z-index: 2;
+    }
+    .hero .art-frame::before { top: -7px; left: -7px; border-right: none; border-bottom: none; }
+    .hero .art-frame::after { bottom: -7px; right: -7px; border-left: none; border-top: none; }
+    .hero .art-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: sepia(0.12) contrast(1.04) saturate(0.95);
+    }
+
+    /* ---------- Scimitar plate ---------- */
+    .sword-plate {
+      margin: 6px auto 0;
+      max-width: 720px;
+      padding: 6px;
+      background: #ffffff;
+      border: 1px solid var(--gold);
+      box-shadow: 0 26px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.25);
+    }
+    .sword-plate .plate-inner {
+      border: 1px solid rgba(201, 162, 39, 0.45);
+      padding: 15px;
+      background: #ffffff;
+    }
+    .sword-plate .scimitar {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .sword-plate figcaption {
+      font-family: "IM Fell English SC", serif;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      color: #7a6230;
+      text-align: center;
+      padding: 13px 0 3px;
+    }
+
+    /* ---------- Quest card ---------- */
+    .quest-card {
+      margin: 40px auto 12px;
+      max-width: 720px;
+      background:
+        linear-gradient(165deg, rgba(233, 220, 192, 0.06), rgba(233, 220, 192, 0.02)),
+        #1a140f;
+      border: 1px solid var(--gold-faint);
+      position: relative;
+      padding: 48px 40px 42px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.5), inset 0 0 60px rgba(0,0,0,0.35);
+    }
+    .quest-card::before {
+      content: "";
+      position: absolute; inset: 9px;
+      border: 1px solid rgba(201, 162, 39, 0.16);
+      pointer-events: none;
+    }
+    .quest-card h2 {
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-align: center;
+      color: var(--gold);
+    }
+    .quest-card h2 .flank { color: var(--gold-faint); }
+
+    .fact-list {
+      list-style: none;
+      margin-top: 30px;
+      display: grid;
+      gap: 16px;
+    }
+    .fact-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(201,162,39,0.12);
+    }
+    .fact-list li:last-child { border-bottom: none; padding-bottom: 0; }
+    .fact-list .key {
+      font-family: "IM Fell English SC", serif;
+      letter-spacing: 0.16em;
+      font-size: 0.78rem;
+      color: var(--red-ember);
+      text-transform: uppercase;
+      min-width: 110px;
+      flex-shrink: 0;
+    }
+    .fact-list .val { font-size: 1.18rem; color: var(--bone); }
+
+    /* ---------- Warnings / note ---------- */
+    .note {
+      margin: 34px auto 0;
+      max-width: 720px;
+      text-align: center;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+    .note .who {
+      display: block;
+      margin-top: 14px;
+      font-family: "IM Fell English SC", serif;
+      font-style: normal;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      color: var(--gold-soft);
+    }
+
+    /* ---------- CTA / footer ---------- */
+    .cta {
+      margin: 44px auto 20px;
+      text-align: center;
+    }
+    .cta a {
+      display: inline-block;
+      font-family: "Cinzel", serif;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.92rem;
+      color: var(--dungeon-deep);
+      background: linear-gradient(180deg, var(--gold-soft), var(--gold));
+      padding: 14px 34px;
+      border: 1px solid #7a5c14;
+      text-decoration: none;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.35);
+      transition: transform 0.12s ease, filter 0.12s ease;
+    }
+    .cta a:hover { transform: translateY(-2px); filter: brightness(1.06); }
+
+    footer {
+      margin-top: 40px;
+      padding: 26px 0 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+    }
+    footer a { color: var(--gold-soft); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer .rule { max-width: 560px; margin-bottom: 18px; }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 760px) {
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 34px 0 40px;
+        text-align: center;
+      }
+      .hero .subtitle { margin-left: auto; margin-right: auto; }
+      .hero .art-frame { max-width: 340px; margin: 0 auto; }
+      .quest-card { padding: 34px 22px 30px; }
+      .fact-list li { flex-direction: column; gap: 4px; text-align: left; }
+      .fact-list .key { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <header class="topbar">
+      <p class="eyebrow">An Invitation · A One-Shot of Wonder &amp; Woe</p>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="title-block">
+        <h1>DUNGEON<span class="amp">,</span><br>INC<span class="amp">.</span></h1>
+        <p class="subtitle">Ever wondered <strong>who builds the dungeons</strong>? Come pitch in — and find out.</p>
+        <span class="tagline-accent">Miniatures · Hilarity · Carnage</span>
+      </div>
+      <div class="art-frame">
+        <img src="pictures/Goblin%20Torchbearer%20in%20a%20Shadowed%20Dungeon.png"
+             alt="A goblin torchbearer in a shadowed dungeon"
+             width="1122" height="1402" loading="eager">
+      </div>
+    </section>
+
+    <!-- Scimitar plate -->
+    <figure class="sword-plate">
+      <div class="plate-inner">
+        <img class="scimitar" src="pictures/Ornate%20Red-Accented%20Fantasy%20Scimitar.png"
+             alt="Ornate red-accented fantasy scimitar — the company cutlass"
+             width="2508" height="627" loading="lazy">
+      </div>
+      <figcaption>The Company Cutlass · issued to every new hire</figcaption>
+    </figure>
+
+    <!-- Quest details -->
+    <section class="quest-card">
+      <h2><span class="flank">❖</span> The Quest Packet <span class="flank">❖</span></h2>
+      <ul class="fact-list">
+        <li>
+          <span class="key">When</span>
+          <span class="val">Sunday, Nov 8 &amp;/or 22 · 3–5 PM</span>
+        </li>
+        <li>
+          <span class="key">Where</span>
+          <span class="val">The Lodge · top-floor restaurant</span>
+        </li>
+        <li>
+          <span class="key">Who</span>
+          <span class="val">Mature teens &amp; adults</span>
+        </li>
+        <li>
+          <span class="key">Bring</span>
+          <span class="val">A crooked smile, a low moral constitution, and a fireproof résumé</span>
+        </li>
+      </ul>
+      <p class="note">
+        The dungeon won't build itself — and neither will the liability waiver.
+        Expect miniatures, hilarity, and a healthy dose of carnage.
+        <span class="who">— Run by DM Bruce K. —</span>
+      </p>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta">
+      <a href="#top">Bring It Home</a>
+    </div>
+
+    <footer>
+      <div class="rule"><span class="glyph">⚔</span></div>
+      <p>Dungeon, Inc. · <a href="https://dungeoninc.barnlab.dev">dungeoninc.barnlab.dev</a></p>
+    </footer>
+
+  </div>
+
+  <!-- Scroll-to-top anchor for CTA -->
+  <div id="top"></div>
+</body>
+</html>
